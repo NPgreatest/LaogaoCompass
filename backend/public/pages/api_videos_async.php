@@ -22,12 +22,26 @@ async function api_videos_async(): Awaitable<void> {
       'insight123',
     );
 
-    $result = await $conn->query(
-      'SELECT video_id, title, publish_date, views, video_url FROM raw_videos ORDER BY publish_date DESC'
-    );
+    // Parse pagination params
+    $pn = (int)($_GET['pn'] ?? '1');
+    $ps = (int)($_GET['ps'] ?? '5');
+    $offset = ($pn - 1) * $ps;
 
+    // Get total count
+    $count_result = await $conn->query('SELECT COUNT(*) as total FROM raw_videos');
+    $total = (int)($count_result->mapRowsTyped()[0]['total'] ?? 0);
+
+    // Get paginated data
+    $query = 'SELECT video_id, title, publish_date, views, video_url FROM raw_videos ORDER BY publish_date DESC LIMIT %d OFFSET %d';
+    $result = await $conn->queryf($query, $ps, $offset);
     $rows = $result->mapRowsTyped();
-    echo \json_encode($rows);
+
+    echo \json_encode(dict[
+      'total' => $total,
+      'page_size' => $ps,
+      'page_num' => $pn,
+      'videos' => $rows,
+    ]);
   } catch (\Exception $e) {
     \http_response_code(500);
     echo \json_encode(dict['error' => $e->getMessage()]);

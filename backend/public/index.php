@@ -11,12 +11,17 @@ async function main(): Awaitable<void> {
     exit();
   }
 
-  $path = $_SERVER['REQUEST_URI'];
+  $path = \parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
   switch ($path) {
     case '/api/videos':
       require __DIR__ . '/pages/api_videos_async.php';
-      await \Pages\api_videos_async(); // async 调用
+      await \Pages\api_videos_async();
+      break;
+
+    case '/api/import-videos':
+      require __DIR__ . '/pages/api_import_videos.php';
+      await \Pages\import_videos();
       break;
 
     default:

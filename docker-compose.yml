@@ -8,6 +8,8 @@ services:
       - "8080:80"
     volumes:
       - ./backend:/var/www
+      - ./transcribe:/var/www/transcribe
+      - ./videodata:/var/www/videodata
 
   frontend:
     build:
