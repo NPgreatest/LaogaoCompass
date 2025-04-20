@@ -13,15 +13,21 @@ async function main(): Awaitable<void> {
 
   $path = \parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-  switch ($path) {
-    case '/api/videos':
+  switch (true) {
+    case $path === '/api/videos':
       require __DIR__ . '/pages/api_videos_async.php';
       await \Pages\api_videos_async();
       break;
 
-    case '/api/import-videos':
+    case $path === '/api/import-videos':
       require __DIR__ . '/pages/api_import_videos.php';
       await \Pages\import_videos();
+      break;
+
+    case \preg_match('#^/api/analyze/([\w-]+)$#', $path, $matches) === 1:
+      $_GET['video_id'] = $matches[1];
+      require __DIR__ . '/pages/api_analyze_video.php';
+      await \Pages\analyze_video();
       break;
 
     default:

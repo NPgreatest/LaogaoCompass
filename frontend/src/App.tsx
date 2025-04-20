@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import VideosPage from './pages/VideosPage';
+import WelcomePage from './pages/WelcomePage';
+import ProjectSelector from './pages/ProjectSelector';
+import ProjectPage from './pages/ProjectPage'
 
+// Main App
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/videos" element={<VideosPage />} />
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/projects" element={<ProjectSelector />} />
+        <Route path="/project/:project_name" element={<ProjectPage />} />
       </Routes>
     </Router>
   );
 }
-
 export default App;
